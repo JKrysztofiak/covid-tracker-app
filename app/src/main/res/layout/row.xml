@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:orientation="vertical"
+        android:background="@drawable/card_view_normal">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/country_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="6dp"
+                android:text="Poland"
+                android:textColor="@color/primary_text"
+                android:textSize="8pt"
+                android:textStyle="bold"
+                android:gravity="bottom"/>
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_marginRight="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/icons"
+                android:gravity="bottom|right"
+                android:text="TextView" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/new_cases_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="12dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/new_cases_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:textColor="@color/icons"
+                    android:gravity="center"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="12pt"
+                    android:autoSizeMaxTextSize="20pt"
+                    android:autoSizeStepGranularity="2pt"
+                    android:text="244" />
+
+                <TextView
+                    android:id="@+id/new_cases_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="8pt"
+                    android:textColor="@color/primary_text"
+                    android:gravity="center_horizontal"
+                    android:text="new cases" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/total_cases_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="14dp"
+                android:layout_marginRight="12dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/total_cases_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:gravity="center"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="12pt"
+                    android:autoSizeMaxTextSize="20pt"
+                    android:autoSizeStepGranularity="2pt"
+                    android:textColor="@color/icons"
+                    android:text="36272323" />
+
+<!--                android:textSize="20pt"-->
+
+                <TextView
+                    android:id="@+id/total_cases_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:textSize="8pt"
+                    android:textColor="@color/primary_text"
+                    android:text="total cases" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
