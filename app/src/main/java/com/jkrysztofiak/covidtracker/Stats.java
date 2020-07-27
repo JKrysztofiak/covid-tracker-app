@@ -2,12 +2,14 @@ package com.jkrysztofiak.covidtracker;
 
 public class Stats {
 
+    private int id;
     private String country;
     private int newCases;
     private int totalCases;
     private String date;
 
-    public Stats(String country, int newCases, int totalCases, String date) {
+    public Stats(int id, String country, int newCases, int totalCases, String date) {
+        this.id = id;
         this.country = country;
         this.newCases = newCases;
         this.totalCases = totalCases;
@@ -44,5 +46,13 @@ public class Stats {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
