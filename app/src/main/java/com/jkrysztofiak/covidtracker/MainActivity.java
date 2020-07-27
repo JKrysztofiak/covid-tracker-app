@@ -2,18 +2,19 @@ package com.jkrysztofiak.covidtracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -34,7 +35,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    ListView listView;
+    ListView cardListView;
     TextView globalTotal;
     TextView globalDeaths;
     FloatingActionButton addButton;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     String jsonResponse;
 
     Set<String> countries;
+    ArrayList<String> countriesNames;
 
     SharedPreferences  mPrefs;
 
@@ -55,18 +57,57 @@ public class MainActivity extends AppCompatActivity {
 
         mPrefs = getPreferences(MODE_PRIVATE);
 
+        countriesNames = new ArrayList<>();
+
+        OkHttpClient client = new OkHttpClient();
+
+        String url = "https://api.covid19api.com/countries";
+
+        Request request = new Request.Builder()
+                .url(url).build();
+
+        Log.w("YO!", "New request");
+
+        client.newCall(request).enqueue(new Callback() {
+                                            @Override
+                                            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                Log.w("YO!", "went wrong");
+
+                                            }
+
+                                            @Override
+                                            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                                if (response.isSuccessful()) {
+
+                                                    try {
+                                                        jsonResponse = response.body().string();
+                                                        JSONArray arr = new JSONArray(jsonResponse);
+
+                                                        for (int i = 0; i < arr.length(); i++) {
+                                                            countriesNames.add(arr.getJSONObject(i).getString("Country"));
+                                                        }
+
+                                                        Log.w("YO!", "All countries names downloaded");
+
+                                                    } catch (Exception e) {
+
+                                                        Log.w("YO!", "error");
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        });
 
 
-        listView = (ListView) findViewById(R.id.list_view);
+
+
+        cardListView = (ListView) findViewById(R.id.list_view);
         globalTotal = (TextView) findViewById(R.id.total_cases_number);
         globalDeaths = (TextView) findViewById(R.id.total_deaths_number);
         addButton = (FloatingActionButton) findViewById(R.id.add_location_button);
 
         //TODO: Read from storage\
-        countries = mPrefs.getStringSet("countrySet",null);
-        if(countries==null){
-            countries = new HashSet<>();
-        }
+        countries = new HashSet<>(mPrefs.getStringSet("countrySet", new HashSet<String>()));
         Log.w("YO!", "Countries retrieved: "+countries.size());
 
         updateUI();
@@ -74,11 +115,53 @@ public class MainActivity extends AppCompatActivity {
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                countries.add("Poland");
-                updateUI();
+
+                Log.w("YO!", "Button clicked");
+
+                final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
+                        MainActivity.this, R.style.BottomSheetDialogTheme
+                );
+                View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(
+                        R.layout.add_country,
+                        (LinearLayout)findViewById(R.id.bottomSheet)
+                );
+
+                Log.w("YO!", "Inflated");
+
+                ListView listView = (ListView) bottomSheetView.findViewById(R.id.list_view);
+
+                CountriesListAdapter adapter = new CountriesListAdapter(MainActivity.this, R.layout.country_row, countriesNames);
+                listView.setAdapter(adapter);
+
+                Log.w("YO!", "Adapter set");
+
+
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        countries.add(countriesNames.get(i));
+                        updateUI();
+                    }
+                });
+                bottomSheetDialog.setCanceledOnTouchOutside(true);
+
+                bottomSheetDialog.setContentView(bottomSheetView);
+                bottomSheetDialog.show();
             }
         });
 
+        cardListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.w("YO!","Item long clicked");
+                Stats tmp = (Stats) adapterView.getItemAtPosition(i);
+                Log.w("YO!", "Country clicked: "+tmp.getCountry());
+                countries.remove(tmp.getCountry());
+                Toast.makeText(MainActivity.this, "COUNTRY REMOVED", Toast.LENGTH_LONG);
+                updateUI();
+                return false;
+            }
+        });
     }
 
     public void updateUI(){
@@ -133,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
 
                                     StatsListAdapter adapter = new StatsListAdapter(MainActivity.this, R.layout.row, statsList);
-                                    listView.setAdapter(adapter);
+                                    cardListView.setAdapter(adapter);
 
                                     Log.w("YO!", "Layout ok");
                                 } catch (JSONException e) {
@@ -155,6 +238,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
 
         SharedPreferences.Editor prefsEditor = mPrefs.edit();
+
+
+        Log.w("YO!","Saving set: "+countries.size());
 
         prefsEditor.putStringSet("countrySet",countries);
         prefsEditor.apply();
