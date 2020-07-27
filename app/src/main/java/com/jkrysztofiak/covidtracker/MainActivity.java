@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -87,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
                                                             countriesNames.add(arr.getJSONObject(i).getString("Country"));
                                                         }
 
+                                                        countriesNames.sort(new Comparator<String>() {
+                                                            @Override
+                                                            public int compare(String s, String t1) {
+                                                                return s.compareTo(t1);
+                                                            }
+                                                        });
                                                         Log.w("YO!", "All countries names downloaded");
 
                                                     } catch (Exception e) {
@@ -105,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         globalTotal = (TextView) findViewById(R.id.total_cases_number);
         globalDeaths = (TextView) findViewById(R.id.total_deaths_number);
         addButton = (FloatingActionButton) findViewById(R.id.add_location_button);
+
 
         //TODO: Read from storage\
         countries = new HashSet<>(mPrefs.getStringSet("countrySet", new HashSet<String>()));
@@ -129,6 +138,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.w("YO!", "Inflated");
 
                 ListView listView = (ListView) bottomSheetView.findViewById(R.id.list_view);
+                Button hideButton = (Button) bottomSheetView.findViewById(R.id.hide_button);
 
                 CountriesListAdapter adapter = new CountriesListAdapter(MainActivity.this, R.layout.country_row, countriesNames);
                 listView.setAdapter(adapter);
@@ -141,9 +151,19 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         countries.add(countriesNames.get(i));
                         updateUI();
+                        bottomSheetDialog.hide();
                     }
                 });
+
+                hideButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        bottomSheetDialog.hide();
+                    }
+                });
+
                 bottomSheetDialog.setCanceledOnTouchOutside(true);
+                bottomSheetDialog.setCancelable(false);
 
                 bottomSheetDialog.setContentView(bottomSheetView);
                 bottomSheetDialog.show();
