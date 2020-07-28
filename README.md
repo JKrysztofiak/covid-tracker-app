@@ -1,3 +1,3 @@
 # covid-tracker-app
 
-![Screenshot](https://i.imgur.com/cYwt5nu.png)
+![Screenshot](https://i.imgur.com/ltdR2VM.png)
