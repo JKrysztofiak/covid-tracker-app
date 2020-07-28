@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/primary_text"
     android:orientation="vertical"
     tools:context=".MainActivity">
@@ -17,16 +18,34 @@
         android:orientation="vertical"
         android:elevation="2dp">
 
-        <TextView
-            android:id="@+id/global_label"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="6dp"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:text="GLOBAL"
-            android:textColor="@color/primary_text" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/global_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/lato_bold"
+                android:text="GLOBAL"
+                android:textColor="@color/primary_text"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginRight="12dp"
+                android:fontFamily="@font/lato"
+                android:gravity="bottom|right"
+                android:text="TextView"
+                android:textColor="@color/icons" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/total_cases_row"
@@ -40,6 +59,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/lato_bold"
                 android:text="1 162 857"
                 android:textColor="@color/icons"
                 android:textSize="32sp" />
@@ -48,7 +69,9 @@
                 android:id="@+id/total_cases_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
+                android:fontFamily="@font/lato"
                 android:text="total cases"
                 android:textColor="@color/primary_text" />
         </LinearLayout>
@@ -64,6 +87,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/lato_bold"
                 android:text="63 263"
                 android:textColor="@color/icons"
                 android:textSize="32sp" />
@@ -72,8 +97,10 @@
                 android:id="@+id/total_deaths_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
+                android:fontFamily="@font/lato"
                 android:text="total deaths"
                 android:textColor="@color/primary_text" />
         </LinearLayout>
@@ -95,7 +122,9 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:src="@android:drawable/ic_input_add"
-        android:background="@color/colorAccent"
+        android:backgroundTint="@color/colorAccent"
+        app:borderWidth="0dp"
+        app:elevation="6dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"/>
 

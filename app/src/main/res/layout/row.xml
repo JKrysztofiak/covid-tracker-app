@@ -23,20 +23,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="6dp"
+                android:fontFamily="@font/lato_bold"
+                android:gravity="bottom"
                 android:text="Poland"
                 android:textColor="@color/primary_text"
                 android:textSize="8pt"
-                android:textStyle="bold"
-                android:gravity="bottom"/>
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/date"
-                android:layout_marginRight="12dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/icons"
-                android:gravity="bottom|right"
-                android:text="TextView" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -59,22 +53,24 @@
                     android:id="@+id/new_cases_number"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:textColor="@color/icons"
-                    android:gravity="center"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMinTextSize="12pt"
                     android:autoSizeMaxTextSize="20pt"
+                    android:autoSizeMinTextSize="12pt"
                     android:autoSizeStepGranularity="2pt"
-                    android:text="244" />
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/lato_bold"
+                    android:gravity="center"
+                    android:text="244"
+                    android:textColor="@color/icons" />
 
                 <TextView
                     android:id="@+id/new_cases_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="8pt"
-                    android:textColor="@color/primary_text"
+                    android:fontFamily="@font/lato"
                     android:gravity="center_horizontal"
-                    android:text="new cases" />
+                    android:text="new cases"
+                    android:textColor="@color/primary_text"
+                    android:textSize="8pt" />
             </LinearLayout>
 
             <LinearLayout
@@ -91,13 +87,14 @@
                     android:id="@+id/total_cases_number"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:gravity="center"
-                    android:autoSizeTextType="uniform"
-                    android:autoSizeMinTextSize="12pt"
                     android:autoSizeMaxTextSize="20pt"
+                    android:autoSizeMinTextSize="12pt"
                     android:autoSizeStepGranularity="2pt"
-                    android:textColor="@color/icons"
-                    android:text="36272323" />
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/lato_bold"
+                    android:gravity="center"
+                    android:text="36272323"
+                    android:textColor="@color/icons" />
 
 <!--                android:textSize="20pt"-->
 
@@ -105,10 +102,11 @@
                     android:id="@+id/total_cases_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/lato"
                     android:gravity="center_horizontal"
-                    android:textSize="8pt"
+                    android:text="total cases"
                     android:textColor="@color/primary_text"
-                    android:text="total cases" />
+                    android:textSize="8pt" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

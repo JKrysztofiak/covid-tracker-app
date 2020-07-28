@@ -42,14 +42,14 @@ public class StatsListAdapter extends ArrayAdapter<Stats> {
         TextView countryLabel = (TextView) convertView.findViewById(R.id.country_label);
         TextView newCasesLabel = (TextView) convertView.findViewById(R.id.new_cases_number);
         TextView totalCasesLabel = (TextView) convertView.findViewById(R.id.total_cases_number);
-        TextView date = (TextView) convertView.findViewById(R.id.date);
+
 
         DecimalFormat df = new DecimalFormat("#,###,###");
 
         countryLabel.setText(country);
         newCasesLabel.setText(df.format(newCases).replaceAll(","," "));
         totalCasesLabel.setText(df.format(totalCases).replaceAll(","," "));
-        date.setText(getItem(position).getDate().split("T")[0]);
+
 
         return convertView;
     }
