@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     TextView globalTotal;
     TextView globalDeaths;
     FloatingActionButton addButton;
+    TextView dateView;
 
     String jsonResponse;
 
@@ -125,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         globalTotal = (TextView) findViewById(R.id.total_cases_number);
         globalDeaths = (TextView) findViewById(R.id.total_deaths_number);
         addButton = (FloatingActionButton) findViewById(R.id.add_location_button);
+        dateView = (TextView) findViewById(R.id.date);
 
 
         String json = mPrefs.getString("Set","");
@@ -175,10 +177,16 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //                        countries.add(countriesNames.get(i));
 //                        countriesID.add(i+"");
-                        countriesIDList.add(i+"");
-                        Log.w("YO!", "Clicked: "+i+" "+countriesNames.get(i));
-                        updateUI();
-                        bottomSheetDialog.hide();
+                        if(!countriesIDList.contains(i+"")){
+                            Log.w("YO!", "Clicked: "+i+" "+countriesNames.get(i));
+                            countriesIDList.add(i+"");
+                            updateUI();
+                            bottomSheetDialog.hide();
+                        }else{
+                            Toast.makeText(MainActivity.this, "This country is already selected", Toast.LENGTH_SHORT).show();
+                        }
+
+
                     }
                 });
 
@@ -241,6 +249,8 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 try {
+
+
                                     int globalTotalCount = object.getJSONObject("Global").getInt("TotalConfirmed");
                                     int globalDeathsCount = object.getJSONObject("Global").getInt("TotalDeaths");
 
@@ -253,6 +263,9 @@ public class MainActivity extends AppCompatActivity {
 
                                     JSONArray countriesArray = object.getJSONArray("Countries");
 
+                                    String date = countriesArray.getJSONObject(0).getString("Date");
+
+                                    dateView.setText(date.split("T")[0]);
 
                                     for(String i: countriesIDList){
                                         int id = Integer.parseInt(i);
@@ -261,8 +274,8 @@ public class MainActivity extends AppCompatActivity {
                                         Log.w("YO!","Adding country. Name: "+currCountry);
                                         int newCases = countriesArray.getJSONObject(id).getInt("NewConfirmed");
                                         int totalCases = countriesArray.getJSONObject(id).getInt("TotalConfirmed");
-                                        String date = countriesArray.getJSONObject(id).getString("Date");
-                                        Stats resp = new Stats(id, currCountry, newCases, totalCases, date);
+                                        String dateSpec = countriesArray.getJSONObject(id).getString("Date");
+                                        Stats resp = new Stats(id, currCountry, newCases, totalCases, dateSpec);
                                         statsList.add(resp);
                                     }
 
