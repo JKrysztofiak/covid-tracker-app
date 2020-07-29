@@ -45,7 +45,7 @@
                 android:layout_marginRight="12dp"
                 android:fontFamily="@font/lato"
                 android:gravity="bottom|right"
-                android:text="TextView"
+                android:text=""
                 android:textColor="@color/icons" />
         </LinearLayout>
 
@@ -82,6 +82,7 @@
             android:id="@+id/total_deaths_row"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="6dp"
             android:orientation="horizontal">
 
             <TextView
@@ -90,6 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="5dp"
                 android:fontFamily="@font/lato_bold"
                 android:text="63 263"
                 android:textColor="@color/icons"
