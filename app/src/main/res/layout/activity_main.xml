@@ -13,7 +13,9 @@
         android:id="@+id/global_card"
         android:layout_width="match_parent"
         android:layout_height="130dp"
-        android:layout_margin="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
         android:background="@drawable/card_view_orange"
         android:orientation="vertical"
         android:elevation="2dp">
@@ -112,9 +114,14 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/global_card"
         android:divider="@android:color/transparent"
-        >
+        android:visibility="gone"
+        />
 
-    </ListView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycle_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/global_card"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_location_button"
