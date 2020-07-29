@@ -36,6 +36,5 @@ public class CountriesListAdapter extends ArrayAdapter<String> {
 
         label.setText(country);
         return convertView;
-
     }
 }

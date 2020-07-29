@@ -8,11 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<String> countriesIDList;
     ArrayList<String> countriesNames;
 
+    ArrayList<Country> countries;
+
     CountryStatsModel model;
 
     SharedPreferences  mPrefs;
@@ -76,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         countriesNames = new ArrayList<>();
         countriesIDList = new ArrayList<>();
+        countries = new ArrayList<>();
 
         OkHttpClient client = new OkHttpClient();
 
@@ -113,6 +119,13 @@ public class MainActivity extends AppCompatActivity {
                                                                 return s.compareTo(t1);
                                                             }
                                                         });
+
+                                                        for(int i=0; i<countriesNames.size(); i++){
+                                                            String countryName = countriesNames.get(i);
+                                                            Country tmp = new Country(i, countryName);
+                                                            countries.add(tmp);
+                                                        }
+
                                                         Log.w("YO!", "All countries names downloaded");
 
                                                     } catch (Exception e) {
@@ -180,11 +193,29 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.w("YO!", "Inflated");
 
-                ListView listView = (ListView) bottomSheetView.findViewById(R.id.list_view);
+                final ListView listView = (ListView) bottomSheetView.findViewById(R.id.list_view);
                 Button hideButton = (Button) bottomSheetView.findViewById(R.id.hide_button);
+                EditText searchBar = (EditText) bottomSheetView.findViewById(R.id.search_country_field);
 
-                CountriesListAdapter adapter = new CountriesListAdapter(MainActivity.this, R.layout.country_row, countriesNames);
+                final CountriesListAdapter adapter = new CountriesListAdapter(MainActivity.this, R.layout.country_row, countriesNames);
                 listView.setAdapter(adapter);
+
+                searchBar.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        adapter.getFilter().filter(charSequence);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
 
                 Log.w("YO!", "Adapter set");
 
@@ -195,9 +226,13 @@ public class MainActivity extends AppCompatActivity {
 //                        countries.add(countriesNames.get(i));
 //                        countriesID.add(i+"");
                         countriesIDList = model.getOrder();
-                        if(!countriesIDList.contains(i+"")){
-                            Log.w("YO!", "Clicked: "+i+" "+countriesNames.get(i));
-                            countriesIDList.add(i+"");
+
+                        String clickedCountry = (String) adapterView.getItemAtPosition(i);
+                        int idClicked = countriesNames.indexOf(clickedCountry);
+
+                        if(!countriesIDList.contains(idClicked+"")){
+                            Log.w("YO!", "Clicked: "+idClicked+" "+countriesNames.get(idClicked));
+                            countriesIDList.add(idClicked+"");
                             updateUI();
                             bottomSheetDialog.hide();
                         }else{

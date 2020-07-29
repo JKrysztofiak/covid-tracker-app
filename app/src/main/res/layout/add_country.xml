@@ -34,10 +34,25 @@
         android:layout_marginLeft="8dp"
         />
 
+    <EditText
+        android:id="@+id/search_country_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:ems="10"
+        android:fontFamily="@font/lato"
+        android:textColor="@color/icons"
+        android:inputType="textPersonName"
+        android:textColorHint="@color/primary_light"
+        android:hint="Search" />
+
+
+
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="500dp"
         android:layout_below="@+id/global_card"
         android:divider="@android:color/transparent" />
 
