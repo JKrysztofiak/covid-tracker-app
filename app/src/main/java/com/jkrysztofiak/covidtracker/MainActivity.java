@@ -1,6 +1,9 @@
 package com.jkrysztofiak.covidtracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 //    Set<String> countriesID;
     ArrayList<String> countriesIDList;
     ArrayList<String> countriesNames;
+
+    CountryStatsModel model;
 
     SharedPreferences  mPrefs;
 
@@ -130,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         String json = mPrefs.getString("Set","");
-        countriesIDList = new ArrayList<>();
 
         Log.w("YO!","JSON: "+json);
 
@@ -145,7 +149,20 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        updateUI();
+        RecyclerView recyclerView = findViewById(R.id.recycle_list_view);
+
+        model = new CountryStatsModel();
+
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(MainActivity.this, model);
+
+        ItemTouchHelper.Callback callback = new MyItemTouchHelper(adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        adapter.setTouchHelper(itemTouchHelper);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+        initializeUI();
 
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 //                        countries.add(countriesNames.get(i));
 //                        countriesID.add(i+"");
+                        countriesIDList = model.getOrder();
                         if(!countriesIDList.contains(i+"")){
                             Log.w("YO!", "Clicked: "+i+" "+countriesNames.get(i));
                             countriesIDList.add(i+"");
@@ -205,23 +223,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        cardListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.w("YO!","Item long clicked");
-                Stats tmp = (Stats) adapterView.getItemAtPosition(i);
-                Log.w("YO!", "Country clicked: "+tmp.getCountry());
-//                countries.remove(tmp.getCountry());
-                countriesIDList.remove(i);
-                Toast.makeText(MainActivity.this, "COUNTRY REMOVED", Toast.LENGTH_LONG);
-                updateUI();
-                return false;
-            }
-        });
+//        cardListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                Log.w("YO!","Item long clicked");
+//                Stats tmp = (Stats) adapterView.getItemAtPosition(i);
+//                Log.w("YO!", "Country clicked: "+tmp.getCountry());
+////                countries.remove(tmp.getCountry());
+//                countriesIDList.remove(i);
+//                Toast.makeText(MainActivity.this, "COUNTRY REMOVED", Toast.LENGTH_LONG);
+//                updateUI();
+//                return false;
+//            }
+//        });
     }
 
-    public void updateUI(){
-
+    public void initializeUI(){
         OkHttpClient client = new OkHttpClient();
 
         String url = "https://api.covid19api.com/summary";
@@ -259,7 +276,6 @@ public class MainActivity extends AppCompatActivity {
                                     globalTotal.setText(df.format(globalTotalCount).replaceAll(","," "));
                                     globalDeaths.setText(df.format(globalDeathsCount).replaceAll(","," "));
 
-                                    ArrayList<Stats> statsList = new ArrayList<>();
 
                                     JSONArray countriesArray = object.getJSONArray("Countries");
 
@@ -276,14 +292,84 @@ public class MainActivity extends AppCompatActivity {
                                         int totalCases = countriesArray.getJSONObject(id).getInt("TotalConfirmed");
                                         String dateSpec = countriesArray.getJSONObject(id).getString("Date");
                                         Stats resp = new Stats(id, currCountry, newCases, totalCases, dateSpec);
-                                        statsList.add(resp);
+                                        model.addCountry(resp);
                                     }
 
+                                    countriesIDList = model.getOrder();
+                                    Log.w("YO!", "Layout ok");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+    }
+
+    public void updateUI(){
+        OkHttpClient client = new OkHttpClient();
+
+        String url = "https://api.covid19api.com/summary";
+
+        Request request = new Request.Builder()
+                .url(url).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(response.isSuccessful()){
+                    Log.w("YO!", "GET Updated");
+                    jsonResponse = response.body().string();
+                    try {
+                        final JSONObject object = new JSONObject(jsonResponse);
+
+                        Log.w("YO!", "JSON ok");
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
 
 
-                                    StatsListAdapter adapter = new StatsListAdapter(MainActivity.this, R.layout.row, statsList);
-                                    cardListView.setAdapter(adapter);
+                                    int globalTotalCount = object.getJSONObject("Global").getInt("TotalConfirmed");
+                                    int globalDeathsCount = object.getJSONObject("Global").getInt("TotalDeaths");
 
+                                    DecimalFormat df = new DecimalFormat("#,###,###");
+
+                                    globalTotal.setText(df.format(globalTotalCount).replaceAll(","," "));
+                                    globalDeaths.setText(df.format(globalDeathsCount).replaceAll(","," "));
+
+
+                                    JSONArray countriesArray = object.getJSONArray("Countries");
+
+                                    String date = countriesArray.getJSONObject(0).getString("Date");
+
+                                    dateView.setText(date.split("T")[0]);
+
+                                    String i = countriesIDList.get(countriesIDList.size()-1);
+
+
+                                    int id = Integer.parseInt(i);
+                                    Log.w("YO!","Adding country. ID: "+id);
+                                    String currCountry = countriesArray.getJSONObject(id).getString("Country");
+                                    Log.w("YO!","Adding country. Name: "+currCountry);
+                                    int newCases = countriesArray.getJSONObject(id).getInt("NewConfirmed");
+                                    int totalCases = countriesArray.getJSONObject(id).getInt("TotalConfirmed");
+                                    String dateSpec = countriesArray.getJSONObject(id).getString("Date");
+                                    Stats resp = new Stats(id, currCountry, newCases, totalCases, dateSpec);
+                                    model.addCountry(resp);
+
+                                    countriesIDList = model.getOrder();
                                     Log.w("YO!", "Layout ok");
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -298,12 +384,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
     }
 
 
     @Override
     protected void onStop() {
         super.onStop();
+
+        countriesIDList = model.getOrder();
 
         Gson gson = new Gson();
         String json = gson.toJson(countriesIDList);
@@ -312,5 +401,8 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
 
     }
+
+
+
 }
 
